@@ -1,3 +1,5 @@
+<?php require_once "pdo.php"; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -142,6 +144,7 @@
                     <i class="fas fa-fw fa-table"></i>
                     <span>Sales Data</span></a>
             </li>
+
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
@@ -232,7 +235,8 @@
                                     </div>
                                     <div>
                                         <div class="small text-gray-500">December 12, 2019</div>
-                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                        <span class="font-weight-bold">A new monthly report is ready to
+                                            download!</span>
                                     </div>
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
@@ -257,7 +261,8 @@
                                         Spending Alert: We've noticed unusually high spending for your account.
                                     </div>
                                 </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All
+                                    Alerts</a>
                             </div>
                         </li>
 
@@ -266,11 +271,11 @@
                             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-envelope fa-fw"></i> -->
-                                <!-- Counter - Messages -->
-                                <!-- <span class="badge badge-danger badge-counter">7</span>
+                        <!-- Counter - Messages -->
+                        <!-- <span class="badge badge-danger badge-counter">7</span>
                             </a> -->
-                            <!-- Dropdown - Messages -->
-                            <!-- <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                        <!-- Dropdown - Messages -->
+                        <!-- <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="messagesDropdown">
                                 <h6 class="dropdown-header">
                                     Message Center
@@ -334,8 +339,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -369,7 +373,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Sales Data</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Inventory Data</h1>
                     <!-- <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
                         For more information about DataTables, please visit the <a target="_blank"
                             href="https://datatables.net">official DataTables documentation</a>.</p> -->
@@ -377,28 +381,30 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <!-- <div class="card-header py-3">
-                                                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-                                            </div> -->
+                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                        </div> -->
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>SalesID</th>
                                             <th>ProductID</th>
                                             <th>Product Name</th>
-                                            <th>Date</th>
+                                            <th>Minimum Quantity</th>
                                             <th>Quantity</th>
+                                            <th>Cost Price</th>
+                                            <th>Sales Price</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>S001</td>
                                             <td>P001</td>
                                             <td>Pilot Black 0.7</td>
-                                            <td>8/6/2023</td>
-                                            <td>5</td>
+                                            <td>3</td>
+                                            <td>60</td>
+                                            <td>RM 3.50</td>
+                                            <td>RM 5.00</td>
                                             <td>
                                                 <a href="#" class="btn btn-primary btn-circle btn-sm">
                                                     <i class="far fa-edit"></i>
@@ -408,7 +414,7 @@
                                                 </a>
                                             </td>
                                         </tr>
-                    
+
                                     </tbody>
                                 </table>
                                 <a href="#" class="btn btn-primary btn-circle btn-sm">
@@ -417,8 +423,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                              </div>
 
                 </div>
                 <!-- /.container-fluid -->
