@@ -140,7 +140,7 @@
                     <span>Inventory Data</span></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="salesTable.html">
+                <a class="nav-link" href="salesTable.php">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Sales Data</span></a>
             </li>

@@ -1,3 +1,5 @@
+<?php require_once "pdo.php"; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -133,7 +135,7 @@
 
             <!-- Nav Item - Tables -->
             <li class="nav-item active">
-                <a class="nav-link" href="inventoryTable.html">
+                <a class="nav-link" href="inventoryTable.php">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Inventory Data</span></a>
             </li>
@@ -266,11 +268,11 @@
                             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-envelope fa-fw"></i> -->
-                                <!-- Counter - Messages -->
-                                <!-- <span class="badge badge-danger badge-counter">7</span>
+                        <!-- Counter - Messages -->
+                        <!-- <span class="badge badge-danger badge-counter">7</span>
                             </a> -->
-                            <!-- Dropdown - Messages -->
-                            <!-- <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                        <!-- Dropdown - Messages -->
+                        <!-- <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="messagesDropdown">
                                 <h6 class="dropdown-header">
                                     Message Center
@@ -334,8 +336,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -394,21 +395,32 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>S001</td>
-                                            <td>P001</td>
-                                            <td>Pilot Black 0.7</td>
-                                            <td>8/6/2023</td>
-                                            <td>5</td>
-                                            <td>
-                                                <a href="#" class="btn btn-primary btn-circle btn-sm">
-                                                    <i class="far fa-edit"></i>
-                                                </a>
-                                                <a href="#" class="btn btn-primary btn-circle btn-sm">
-                                                    <i class="material-icons">&#xe872;</i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                    
+                                            <?php
+                                            $stmt = $pdo->query("SELECT s.salesID, s.productID, p.product_name, s.salesDate, s.quantity FROM sales s INNER JOIN inventory p on
+                                                                                        s.productID = p.productID");
+                                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                                echo "<td>";
+                                                echo ($row['salesID']);
+                                                echo ("</td><td>");
+                                                echo ($row['productID']);
+                                                echo ("</td><td>");
+                                                echo ($row['product_name']);
+                                                echo ("</td><td>");
+                                                echo ($row['salesDate']);
+                                                echo ("</td><td>");
+                                                echo ($row['quantity']);
+                                                echo ("</td><td>");
+                                                echo ('<a href="#" class="btn btn-primary btn-circle btn-sm">
+                                                                                                <i class="far fa-edit"></i>
+                                                                                            </a>
+                                                                                            <a href="#" class="btn btn-primary btn-circle btn-sm">
+                                                                                                <i class="material-icons">&#xe872;</i>
+                                                                                            </a>
+                                                                                        </td>
+                                                                                    </tr>');
+                                            }
+                                            ?>
+
                                     </tbody>
                                 </table>
                                 <a href="#" class="btn btn-primary btn-circle btn-sm">
@@ -417,27 +429,28 @@
                             </div>
                         </div>
                     </div>
-                    
-                              </div>
+
 
                 </div>
-                <!-- /.container-fluid -->
 
             </div>
-            <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2020</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
+            <!-- /.container-fluid -->
 
         </div>
-        <!-- End of Content Wrapper -->
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; Your Website 2020</span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
 
     </div>
     <!-- End of Page Wrapper -->
