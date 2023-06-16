@@ -399,21 +399,33 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>P001</td>
-                                            <td>Pilot Black 0.7</td>
-                                            <td>3</td>
-                                            <td>60</td>
-                                            <td>RM 3.50</td>
-                                            <td>RM 5.00</td>
-                                            <td>
-                                                <a href="#" class="btn btn-primary btn-circle btn-sm">
+                                            <?php
+                                            $stmt = $pdo->query("SELECT productID, product_name, minQuantity, quantity, costPrice, salesPrice FROM inventory");
+                                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                                echo "<td>";
+                                                echo ($row['productID']);
+                                                echo ("</td><td>");
+                                                echo ($row['product_name']);
+                                                echo ("</td><td>");
+                                                echo ($row['minQuantity']);
+                                                echo ("</td><td>");
+                                                echo ($row['quantity']);
+                                                echo ("</td><td>");
+                                                echo ($row['costPrice']);
+                                                echo ("</td><td>");
+                                                echo ($row['salesPrice']);
+                                                echo ("</td><td>");
+                                                echo ('<a href="#" class="btn btn-primary btn-circle btn-sm">
                                                     <i class="far fa-edit"></i>
                                                 </a>
                                                 <a href="#" class="btn btn-primary btn-circle btn-sm">
                                                     <i class="material-icons">&#xe872;</i>
                                                 </a>
                                             </td>
-                                        </tr>
+                                        </tr>');
+                                            }
+                                            ?>
+
 
                                     </tbody>
                                 </table>
