@@ -3,19 +3,29 @@ require_once "pdo.php";
 session_start();
 
 if ( isset($_POST['deleteProduct']) && isset($_POST['product_id']) ) {
-  $sql = "DELETE FROM inventory WHERE productID = :product_id";
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute(array(':product_id' => $_POST['product_id']));
-  $_SESSION['message'] = 'Product Item Deleted Successfully.';
-  header("Location: inventoryTable.php");
-  return;
+  try{
+    $sql = "DELETE FROM inventory WHERE productID = :product_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(':product_id' => $_POST['product_id']));
+    $_SESSION['message'] = 'Product Item Deleted Successfully.';
+    header("Location: inventoryTable.php");
+    return;
+  }
+  catch (PDOException $e) {
+    if ($e->getCode() === '23000') {
+      echo '<script>alert("Sales record that reference this product is found. Please delete the sales record first.");</script>';
+    } else {
+      echo '<script>alert("An error occurred: ' . $e->getMessage() . '");</script>';
+    }
+  }
 }
 
 if (!isset($_GET['product_id']))  {
-  echo '<script> alert("Please login");</script>';
-  header('refresh:0;url=login.php');
+  // echo '<script> alert("Please login");</script>';
+  header('refresh:0;url=inventoryTable.php');
   return;
 }else{
+// if (isset($_GET['product_id']))  {
   $stmt = $pdo->prepare("SELECT product_name, productID FROM inventory where productID = :product_id");
   $stmt->execute(array(":product_id" => $_GET['product_id']));
   $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -55,5 +65,9 @@ if (!isset($_GET['product_id']))  {
   <script>
       $(document).ready(function(){
           $("#deletemodal").modal('show');
+      });
+      // Add the following code to redirect after the alert box is closed
+      $(document).on('hidden.bs.modal', '#deletemodal', function () {
+          window.location.href = 'inventoryTable.php';
       });
   </script>
