@@ -222,7 +222,7 @@ if(!empty($_SESSION['userID'])){
                                         ?>
                                     </tbody>
                                 </table>
-                                <a href="#" class="btn btn-primary btn-circle btn-sm">
+                                <a href="addSales.php" class="btn btn-primary btn-circle btn-sm">
                                     <i class="fa fa-plus"></i>
                                 </a>
                             </div>

@@ -33,8 +33,8 @@ if (!isset($_GET['sales_id']))  {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header bg-primary">
-        <h5 class="modal-title" id="exampleModalLabel">Delete Sales Record</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="javascript:window.location='salesTable.php'">
+        <h5 class="modal-title text-white" id="exampleModalLabel">Delete Sales Record</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" onclick="javascript:window.location='salesTable.php'">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>

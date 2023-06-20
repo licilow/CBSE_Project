@@ -214,7 +214,7 @@ if(!empty($_SESSION['userID'])){
 
 
                                 </table>
-                                <a href="#" class="btn btn-primary btn-circle btn-sm">
+                                <a href="addProduct.php" class="btn btn-primary btn-circle btn-sm">
                                     <i class="fa fa-plus"></i>
                                 </a>
                             </div>

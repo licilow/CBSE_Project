@@ -2,45 +2,53 @@
 require_once "pdo.php";
 session_start();
 
-// Check if sales ID is provided in the URL
-if (!isset($_GET['sales_id'])) {
-    header("Location: salesTable.php");
-    exit();
-}
-
-$salesID = $_GET['sales_id'];
-
 // Get product names from the inventory table
 $stmt = $pdo->query("SELECT productID, product_name FROM inventory");
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Retrieve the sales details from the database
-$stmt = $pdo->prepare("SELECT * FROM sales WHERE salesID = ?");
-$stmt->execute([$salesID]);
-$sales = $stmt->fetch();
-
-// Check if the sales exists
-if (!$sales) {
-    header("Location: salesTable.php");
-    exit();
-}
-
-$error = "";
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Retrieve the form data
+    // Validate form data
+    $errors = array();
+    // Validate sales ID
     $salesID = $_POST['salesID'];
+    if (empty($salesID)) {
+        $errors[] = "Sales ID is required.";
+    }
+
+    // Validate product ID
     $productID = $_POST['productID'];
+    if (empty($productID)) {
+        $errors[] = "Product ID is required.";
+    }
+
+    // Validate sales date
     $salesDate = $_POST['salesDate'];
+    if (empty($salesDate)) {
+        $errors[] = "Sales date is required.";
+    }
+
+    // Validate quantity
     $quantity = $_POST['quantity'];
+    if (empty($quantity)) {
+        $errors[] = "Quantity is required.";
+    }
 
-    // Update the product in the database
-    $stmt = $pdo->prepare("UPDATE sales SET productID = ?, salesDate = ?, quantity = ?WHERE salesID = ?");
-    $stmt->execute([$productID, $salesDate, $quantity, $salesID]);
+    // If there are no errors, insert the new row into the sales table
+    if (empty($errors)) {
+        $stmt = $pdo->prepare("INSERT INTO sales (salesID, productID, salesDate, quantity) VALUES (:salesID, :productID, :salesDate, :quantity)");
+        $stmt->execute(
+            array(
+                ':salesID' => $salesID,
+                ':productID' => $productID,
+                ':salesDate' => $salesDate,
+                ':quantity' => $quantity
+            )
+        );
 
-    // Redirect back to the inventory table page
-    header("Location: salesTable.php");
-    exit();
+        // Redirect to the sales table
+        header("Location: salesTable.php");
+        return;
+    }
 }
 ?>
 
@@ -56,33 +64,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
     crossorigin="anonymous"></script>
 
-<div class="modal fade" id="editmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="addmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h5 class="modal-title text-white" id="exampleModalLabel">Edit Sales</h5>
+                <h5 class="modal-title text-white" id="exampleModalLabel">Add Sales</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"
                     onclick="javascript:window.location='salesTable.php'">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="POST" action="">
-                <div class="form-group">
-                    <span class="text-danger">
-                        <?php echo $error; ?>
-                    </span>
+
+            <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+                <div class="form-group mx-3 mt-3">
+                    <label for="salesID">Sales ID:</label>
+                    <input type="text" class="form-control" id="salesID" name="salesID"
+                        value="<?php echo isset($_POST['salesID']) ? $_POST['salesID'] : ''; ?>">
                 </div>
-                <input type="hidden" type="text" class="form-control" id="salesID" name="salesID"
-                    value="<?php echo $sales['salesID']; ?>" required>
                 <div class="form-group mx-3 mt-3">
                     <label for="productID">Product:</label>
                     <select class="form-control" id="productID" name="productID">
                         <option value="">Select Product</option>
                         <?php
                         foreach ($products as $product) {
-                            $selected = ($sales['productID'] == $product['productID']) ? 'selected' : '';
-                            echo '<option value="' . $product['productID'] . '" ' . $selected . '>' . $product['product_name'] . '</option>';
+                            echo '<option value="' . $product['productID'] . '">' . $product['product_name'] . '</option>';
                         }
                         ?>
                     </select>
@@ -90,16 +96,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="form-group mx-3 mt-3">
                     <label for="salesDate">Sales Date:</label>
                     <input type="date" class="form-control" id="salesDate" name="salesDate"
-                        value="<?php echo $sales['salesDate']; ?>" required>
+                        value="<?php echo isset($_POST['salesDate']) ? $_POST['salesDate'] : ''; ?>">
                 </div>
                 <div class="form-group mx-3 mt-3">
                     <label for="quantity">Quantity:</label>
                     <input type="number" class="form-control" id="quantity" name="quantity"
-                        value="<?php echo $sales['quantity']; ?>" required>
+                        value="<?php echo isset($_POST['quantity']) ? $_POST['quantity'] : ''; ?>">
                 </div>
-                <button type="submit" class="btn btn-primary mx-3 mt-3">Update</button>
+                <button type="submit" class="btn btn-primary mx-3 mt-3">Add</button>
                 <button type="button" class="btn btn-secondary mx-3 mt-3" data-dismiss="modal"
-                    onclick="javascript:window.location='salesTable.php'">Cancel</button>
+                    onclick="javascript:window.location='salesTable.php'"> Cancel </button>
             </form>
         </div>
     </div>
@@ -107,6 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script>
     $(document).ready(function () {
-        $("#editmodal").modal('show');
+        $("#addmodal").modal('show');
     });
 </script>

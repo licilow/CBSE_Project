@@ -41,8 +41,8 @@ if (!isset($_GET['product_id']))  {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header bg-primary">
-        <h5 class="modal-title" id="exampleModalLabel">Delete Product Item</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="javascript:window.location='inventoryTable.php'">
+        <h5 class="modal-title text-white" id="exampleModalLabel">Delete Product Item</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" onclick="javascript:window.location='inventoryTable.php'">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
