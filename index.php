@@ -3,21 +3,38 @@ require_once "pdo.php";
 require_once "session.php";
 
 $userID = "";
-if(!empty($_SESSION['userID'])){
+if (!empty($_SESSION['userID'])) {
     $userID = $_SESSION['userID'];
-}else{
+} else {
     header("Location: login.php");
 }
 
-function checkStock(){
+function checkStock()
+{
     global $pdo;
     $stmt = $pdo->query("SELECT productID, product_name, quantity, minQuantity FROM inventory WHERE quantity < minQuantity");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function calcProgress(){
+function calcProgress()
+{
 
 }
+
+$salesData = array();
+$stmt = $pdo->query("SELECT p.costPrice, p.salesPrice, s.salesDate, s.quantity as 'salesQuantity', p.quantity as 'productQuantity', p.minQuantity FROM sales s INNER JOIN inventory p on s.productID = p.productID");
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    array_push($salesData, array('costPrice' => $row['costPrice'], 'salesPrice' => $row['salesPrice'], 'salesDate' => $row['salesDate'], 'salesQuantity' => $row['salesQuantity'], 'productQuantity' => $row['productQuantity'], 'minQuantity' => $row['minQuantity']));
+}
+$jsonData = json_encode($salesData);
+
+$url = "http://localhost/CBSE_Project/webService/compute.php?salesData=" . $jsonData;
+
+$client = curl_init($url);
+curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($client);
+
+$result = json_decode($response);
 ?>
 
 <!DOCTYPE html>
@@ -46,8 +63,8 @@ function calcProgress(){
 
 <body id="page-top">
 
-     <!-- Page Wrapper -->
-     <div id="wrapper">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
 
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
@@ -147,9 +164,10 @@ function calcProgress(){
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 regular"><?php print($userID) ?></span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 regular">
+                                    <?php print($userID) ?>
+                                </span>
+                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -185,7 +203,9 @@ function calcProgress(){
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                 Earnings (Monthly)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                            <div class='h5 mb-0 font-weight-bold text-gray-800'>
+                                                <?php echo $result->monthlySales ?>
+                                            </div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -203,7 +223,9 @@ function calcProgress(){
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                 Earnings (Annual)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?php echo $result->annualSales ?>
+                                            </div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -219,11 +241,14 @@ function calcProgress(){
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Stock Number
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total
+                                                Stock Number
                                             </div>
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                                        <?php echo $result->stockNumber ?>
+                                                    </div>
                                                 </div>
                                                 <div class="col">
                                                     <div class="progress progress-sm mr-2">
@@ -250,7 +275,9 @@ function calcProgress(){
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 Low Stock Items</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?php echo $result->lowStock ?>
+                                            </div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -290,90 +317,99 @@ function calcProgress(){
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
+                                        <canvas id="myAreaChart"
+                                            data-php-variable="<?php echo json_encode($result->allMonthSales); ?>"></canvas>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-            <!-- Content Row -->
-                <div class="col-xl-4 col-lg-5">
-                    <div class="row">
-                        <!-- Content Column -->
-                        <div class="col-lg-12 mb-10">
+                        <!-- Content Row -->
+                        <div class="col-xl-4 col-lg-5">
+                            <div class="row">
+                                <!-- Content Column -->
+                                <div class="col-lg-12 mb-10">
 
-                            <!-- Project Card Example -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Low Stock Items</h6>
-                                </div>
-                                <div class="card-body">
-                                    <?php
-                                    
-                                    $rows = checkStock();
-                                    foreach ($rows as $row) {
-                                        $productID = $row['productID'];
-                                        $productName = $row['product_name'];
-                                        $quantity = $row['quantity'];
-                                        $minQuantity = $row['minQuantity'];
-                                    ?>
-                                    
-                                        <h4 class="small font-weight-bold"><?php echo $productID. "\t" .$productName; ?> <span class="float-right"><?php echo $quantity . '/' . $minQuantity; ?></span></h4>
-                                        <div class="progress mb-4">
-                                            <div class="progress-bar bg-danger" role="progressbar" style="width: <?php echo ($quantity / $minQuantity) * 100; ?>%"
-                                                aria-valuenow="<?php echo ($quantity / $minQuantity) * 100; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <!-- Project Card Example -->
+                                    <div class="card shadow mb-4">
+                                        <div class="card-header py-3">
+                                            <h6 class="m-0 font-weight-bold text-primary">Low Stock Items</h6>
                                         </div>
-                                    <?php }?>
+                                        <div class="card-body">
+                                            <?php
+
+                                            $rows = checkStock();
+                                            foreach ($rows as $row) {
+                                                $productID = $row['productID'];
+                                                $productName = $row['product_name'];
+                                                $quantity = $row['quantity'];
+                                                $minQuantity = $row['minQuantity'];
+                                                ?>
+
+                                                <h4 class="small font-weight-bold">
+                                                    <?php echo $productID . "\t" . $productName; ?> <span
+                                                        class="float-right">
+                                                        <?php echo $quantity . '/' . $minQuantity; ?>
+                                                    </span>
+                                                </h4>
+                                                <div class="progress mb-4">
+                                                    <div class="progress-bar bg-danger" role="progressbar"
+                                                        style="width: <?php echo ($quantity / $minQuantity) * 100; ?>%"
+                                                        aria-valuenow="<?php echo ($quantity / $minQuantity) * 100; ?>"
+                                                        aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <!-- /.container-fluid -->
+
+                    </div>
+                    <!-- End of Main Content -->
+
+                </div>
+                <!-- End of Content Wrapper -->
+
+            </div>
+            <!-- End of Page Wrapper -->
+
+            <!-- Scroll to Top Button-->
+            <a class="scroll-to-top rounded" href="#page-top">
+                <i class="fas fa-angle-up"></i>
+            </a>
+
+            <!-- Logout Modal-->
+            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">Select "Logout" below if you are ready to end your current session.
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                            <a class="btn btn-primary" href="logout.php">Logout</a>
+                        </div>
                     </div>
                 </div>
-                <!-- /.container-fluid -->
-
             </div>
-            <!-- End of Main Content -->
 
-        </div>
-        <!-- End of Content Wrapper -->
+            <!-- Bootstrap core JavaScript-->
+            <script src="vendor/jquery/jquery.min.js"></script>
+            <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    </div>
-    <!-- End of Page Wrapper -->
+            <!-- Page level plugins -->
+            <script src="vendor/chart.js/Chart.min.js"></script>
 
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="logout.php">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="js/demo/earningchart.js"></script>
+            <!-- Page level custom scripts -->
+            <script src="js/demo/earningchart.js"></script>
 
 </body>
 
