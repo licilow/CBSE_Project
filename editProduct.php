@@ -79,11 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
           <div class="form-group mx-3 mt-3">
               <label for="costPrice">Cost Price:</label>
-              <input type="number" class="form-control" id="costPrice" name="costPrice" value="<?php echo $product['costPrice']; ?>" required>
+              <input type="text" class="form-control" pattern="[0-9]+(\.[0-9]{1,2})?" id="costPrice" name="costPrice" value="<?php echo $product['costPrice']; ?>" required>
           </div>
           <div class="form-group mx-3 mt-3">
               <label for="salesPrice">Sales Price:</label>
-              <input type="number" class="form-control" id="salesPrice" name="salesPrice" value="<?php echo $product['salesPrice']; ?>" required>
+              <input type="text" class="form-control" pattern="[0-9]+(\.[0-9]{1,2})?" id="salesPrice" name="salesPrice" value="<?php echo $product['salesPrice']; ?>" required>
           </div>
           <button type="submit" class="btn btn-primary mx-3 mt-3">Update</button>
           <button type="button" class="btn btn-secondary mx-3 mt-3" data-dismiss="modal" onclick="javascript:window.location='inventoryTable.php'">Cancel</button>

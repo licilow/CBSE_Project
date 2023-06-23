@@ -81,11 +81,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="form-group mx-3 mt-3">
                     <label for="costPrice">Cost Price:</label>
-                    <input type="number" class="form-control" id="costPrice" name="costPrice" required>
+                    <input type="text" class="form-control" id="costPrice" name="costPrice" pattern="[0-9]+(\.[0-9]{1,2})?" required>
                 </div>
                 <div class="form-group mx-3 mt-3">
                     <label for="salesPrice">Sales Price:</label>
-                    <input type="number" class="form-control" id="salesPrice" name="salesPrice" required>
+                    <input type="text" class="form-control" id="salesPrice" name="salesPrice" pattern="[0-9]+(\.[0-9]{1,2})?" required>
                 </div>
                 <button type="submit" class="btn btn-primary mx-3 mt-3">Add</button>
                 <button type="button" class="btn btn-secondary mx-3 mt-3" data-dismiss="modal"
